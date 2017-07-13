@@ -1,0 +1,9 @@
+[Unit]
+Description=mailsync timer
+
+[Timer]
+OnCalendar=*:0/3
+Unit=mailsync.service
+
+[Install]
+WantedBy=default.target

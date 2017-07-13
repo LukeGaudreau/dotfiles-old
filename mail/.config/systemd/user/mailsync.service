@@ -1,0 +1,15 @@
+[Unit]
+Description=Start mailsync script
+
+[Service]
+Type=oneshot
+Environment=DISPLAY=:0
+ExecStartPre=/home/luke/.local/bin/maildir-notmuch-sync pre /home/luke/.mail/gmail
+ExecStart=/usr/bin/mbsync gmail
+ExecStartPost=/home/luke/.local/bin/maildir-notmuch-sync post /home/luke/.mail/gmail
+TimeoutStopSec=10
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=default.target

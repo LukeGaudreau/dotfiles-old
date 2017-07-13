@@ -1,0 +1,57 @@
+# -*- mode: conf; -*-
+
+Create Slave
+Expunge Both
+SyncState *
+
+IMAPAccount gmail
+Host imap.gmail.com
+User gaudreal@bc.edu
+PassCmd "+pass applications/gmail/bc"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/inbox
+
+Channel gmail-inbox
+Master :gmail-remote:INBOX
+Slave :gmail-local:INBOX
+
+Channel gmail-archive
+Master ":gmail-remote:[Gmail]/All Mail"
+Slave :gmail-local:archive
+
+Channel gmail-drafts
+Master :gmail-remote:[Gmail]/Drafts
+Slave :gmail-local:drafts
+
+Channel gmail-sent
+Master ":gmail-remote:[Gmail]/Sent Mail"
+Slave :gmail-local:sent
+
+Channel gmail-spam
+Master :gmail-remote:[Gmail]/Spam
+Slave :gmail-local:spam
+
+Channel gmail-trash
+Master :gmail-remote:[Gmail]/Trash
+Slave :gmail-local:trash
+
+Channel gmail-rest
+Master :gmail-remote:
+Slave :gmail-local:
+Patterns * ![Gmail]* !archive !drafts !sent !spam !trash !INBOX
+
+Group gmail
+Channel gmail-inbox
+Channel gmail-archive
+Channel gmail-drafts
+Channel gmail-sent
+Channel gmail-spam
+Channel gmail-trash
+Channel gmail-rest
