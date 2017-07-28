@@ -343,6 +343,7 @@ you should place your code here."
         org-blank-before-new-entry nil
         org-separator-lines 0
         org-refile-use-outline-path 'file)
+  (push "\\*Org Agenda\\*" spacemacs-useful-buffers-regexp)
   (add-hook 'org-mode-hook (lambda ()
                              (visual-line-mode t)
                              (setq line-spacing 0.5)
@@ -382,10 +383,10 @@ you should place your code here."
     '(progn
        ;; Hide categories from Agenda
        (setq org-agenda-prefix-format '((agenda . "%?-12t% s")
-                                         (timeline . "  % s")
-                                         (todo . "")
-                                         (tags . "")
-                                         (search . "")))
+                                        (timeline . "  % s")
+                                        (todo . "")
+                                        (tags . "")
+                                        (search . "")))
        (setq org-agenda-scheduled-leaders '("" "%2d d. ago: ")
              org-agenda-deadline-leaders '("Due:  " "Due in %3d d.: " "%2d d. Overdue: "))
        (setq org-agenda-timegrid-use-ampm t
