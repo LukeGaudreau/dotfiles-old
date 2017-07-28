@@ -325,7 +325,17 @@ you should place your code here."
   ;; Notmuch
   (setq user-full-name "Luke Gaudreau"
         user-mail-address "luke.gaudreau@bc.edu"
-        notmuch-fcc-dirs "gmail/sent")
+        notmuch-fcc-dirs "gmail/sent"
+        message-forward-as-mime nil
+        message-forward-ignored-headers ".*")
+  (setq notmuch-saved-searches '((:name "inbox" :query "tag:inbox" :key "i" :sort-order 'newest-first)
+                                 (:name "primo" :query "tag:primo" :key "p" :sort-order 'newest-first)
+                                 (:name "unread" :query "tag:unread" :key "u" :sort-order 'newest-first)
+                                 (:name "flagged" :query "tag:flagged" :key "f" :sort-order 'newest-first)
+                                 (:name "sent" :query "tag:sent" :key "t" :sort-order 'newest-first)
+                                 (:name "drafts" :query "tag:draft" :key "d" :sort-order 'newest-first)
+                                 (:name "archive" :query "tag:archive" :key "a" :sort-order 'newest-first)))
+
   ;; org-mode
   (require 'ox-confluence)
   (setq org-startup-indented t
