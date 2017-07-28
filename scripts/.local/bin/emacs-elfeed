@@ -1,0 +1,3 @@
+#!/bin/sh
+
+emacsclient -c -F "((name . \"emacs-elfeed\"))" -e "(elfeed)"

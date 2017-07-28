@@ -1,0 +1,3 @@
+#!/bin/sh
+
+emacsclient -c -F "((name . \"emacs-notmuch\"))" -e "(notmuch)"
