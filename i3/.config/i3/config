@@ -1,0 +1,241 @@
+# Use Mod4 as modifier
+set $mod Mod4
+
+# Use Fira Sans as the system font
+font pango:Ubuntu 22
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Mod+space runs dmenu for Desktop Apps
+bindsym $mod+space exec --no-startup-id rofi -show drun
+
+# Alt+space runs dmenu
+bindsym Mod1+space exec --no-startup-id rofi -show run
+
+# Mod+shift+space runs passmenu
+bindsym $mod+p exec --no-startup-id /home/luke/.config/rofi/passmenu
+
+# bindsym $mod+m exec --no-startup-id displayctl menu 
+
+# Mod+Return starts a terminal
+bindsym $mod+Shift+Return exec xterm
+
+# Mod+E starts emacs for coding
+bindsym $mod+Shift+e exec emacs-code
+
+# Mod+F starts elfeed
+bindsym $mod+Shift+f exec emacs-elfeed
+
+# Mod+M starts notmuch
+bindsym $mod+Shift+m exec emacs-notmuch
+
+# Mod+O starts org-agenda
+bindsym $mod+Shift+o exec emacs-org
+
+# Mod+T starts org-twitter
+bindsym $mod+Shift+t exec emacs-twitter
+
+# Screen brightness controls
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 5 
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5 
+
+# Screen volume controls
+bindsym XF86AudioMute exec --no-startup-id pamixer --toggle-mute 
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer --decrease 5
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer --increase 5
+
+# Screenshots
+bindsym --release $mod+Mod1+s exec scrot --silent --select --quality 100 '/home/luke/Pictures/Screenshots/%Y-%m-%d-%H-%M-%S_$wx$h.png' -e 'xclip -selection c -t image/png $f'
+
+# Control+Alt+l locks the screen
+bindsym Control+Mod1+l exec i3lock -c 303030
+
+# Mod+Shift+r restarts i3wm
+bindsym $mod+Shift+r restart
+
+# Mod+Shift+c reloads the config
+bindsym $mod+Shift+c reload
+
+# Mod+Shift+q logs out of i3wm
+bindsym $mod+Shift+q exit
+
+# Mod+w kills the focussed window
+bindsym $mod+w kill
+
+# Mod+Shift+h/j/k/l change focus in a Vimlike way
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# Mod+Shift+h/j/k/l move the window in a Vimlike way
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Mod+backslash splits horizontally
+bindsym $mod+o split h
+
+# Mod+minus splits vertically
+bindsym $mod+u split v
+
+# Mod+f makes the focussed container fullscreen
+bindsym $mod+f fullscreen
+
+# Mod+s/w/e changes to stacking/tabbed/togglesplit layout
+bindsym $mod+s layout stacking
+bindsym $mod+t layout tabbed
+bindsym $mod+i layout toggle split
+
+# Mod+space toggles between tiled and floating
+bindsym $mod+period floating toggle
+
+# Mod+a/z switches focus between container parent and child
+bindsym $mod+semicolon focus parent
+bindsym $mod+apostrophe focus child
+
+# Mod+r resizes a container
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym h resize shrink width  10 px or 10 ppt
+    bindsym j resize grow   height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow   width  10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+set $ws1 "1:base"
+set $ws2 "2:web"
+set $ws3 "3:work"
+set $ws4 "4:code"
+set $ws5 "5:music"
+set $ws6 "6"
+set $ws7 "7"
+
+# Mod+<n> switches to a workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+
+# Mod+n renames the workspace
+bindsym $mod+n exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+
+# Alt+Tab switches windows
+bindsym Mod1+Tab exec --no-startup-id rofi -show window
+
+# Mod+Tab switches to previously focused workspace
+bindsym $mod+Tab workspace back_and_forth
+
+# Mod+Shift+Tab moves the container to previosly focused workspace
+bindsym $mod+Shift+Tab move container to workspace back_and_forth
+
+# Mod+Shift+<n> moves a container to a workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+
+# Window assignment rules
+# Workspace 1, unassigned
+
+# Workspace 2, web
+assign [class="google-chrome"] $ws2
+assign [class="chromium"] $ws2
+assign [instance="emacs-elfeed"] $ws2
+assign [instance="emacs-twitter"] $ws2
+
+# Workspace 3, work
+assign [instance="emacs-notmuch"] $ws3
+assign [instance="emacs-org"] $ws3
+
+# Workspace 4, code
+assign [instance="emacs-code"] $ws4
+
+# Workspace 5, virtual machines and remote desktops
+assign [class="Remmina"] $ws6
+assign [class="VirtualBox"] $ws6
+
+# Workspace 6, libreoffice and other documents
+assign [instance="libreoffice"] $ws6
+
+# Workspace 7, visual tools 
+
+# Workspace 8, games
+assign [class="Steam"] 8 play
+for_window [title="spotify"] move scratchpad
+
+# Worskpace 9, private browsers and other testing tools
+
+# Windows that float
+for_window [class="Sxiv"] floating enable
+for_window [class="Mirage"] floating enable
+for_window [class="Apvlv"] floating enable
+
+bindsym $mod+Shift+Up move workspace to output up
+bindsym $mod+Shift+Down move workspace to output down
+
+# i3bar at bottom of screen
+bar {
+    font              pango:Fira Sans 22
+    position          top
+    #status_command    statusbar
+    status_command    i3status --config ~/.config/i3/status
+    strip_workspace_numbers no
+
+
+    colors {
+        background #252e32ee
+        statusline #ffffff
+
+        focused_workspace  #303030 #303030 #ffffff 
+        active_workspace   #303030 #303030 #ffffff 
+        inactive_workspace #303030 #303030 #b8b8b8 
+        urgent_workspace   #303030 #303030 #fe7f7f 
+        binding_mode       #303030 #303030 #66ccaa 
+
+    }
+}
+
+# gaps
+#gaps inner 12
+#smart_gaps on
+
+# new windows have a 3px border
+new_window pixel 3
+
+# hide borders at screen edges
+hide_edge_borders both
+
+# window colors 
+client.focused          #66ccaa #303030 #ffffff #5cb899 #66ccaa
+client.focused_inactive #efefef #303030 #ffffff #5cb899 #efefef
+client.unfocused        #b8b8b8 #303030 #b8b8b8 #5cb899 #b8b8b8
+client.urgent           #fe7f7f #303030 #ffffff #e47272 #fe7f7f
+client.placeholder      #000000 #303030 #ffffff #e3d071 #000000
+
+#workspace number "1 base" output eDP1
+#workspace "9 test" output HDMI1
+
+# Adjust dual monitors
+#exec_always --no-startup-id extend.sh
+
+# set wallpaper
+#exec_always --no-startup-id hsetroot -tile ~/.wall.jpg
+
+# provide compositing
+#exec --no-startup-id compton
+
+# provide notifications
+#exec --no-startup-id dunst
+
+#exec --no-startup-id termite -t 'spotify' -e 'ncmpcpp'
