@@ -1,6 +1,8 @@
 # Use Mod4 as modifier
 set $mod Mod4
 
+set $browser chromium --password-store=gnome
+
 # Use Fira Sans as the system font
 font pango:Ubuntu 22
 
@@ -21,6 +23,9 @@ bindsym $mod+p exec --no-startup-id /home/luke/.config/rofi/passmenu
 # Mod+Return starts a terminal
 bindsym $mod+Shift+Return exec xterm
 
+# Mod+N starts opens a new emacs frame
+bindsym $mod+Shift+N exec emacsclient -c -n -e '(switch-to-buffer nil)'
+
 # Mod+E starts emacs for coding
 bindsym $mod+Shift+e exec emacs-code
 
@@ -35,6 +40,9 @@ bindsym $mod+Shift+o exec emacs-org
 
 # Mod+T starts org-twitter
 bindsym $mod+Shift+t exec emacs-twitter
+
+# Mod+B start web browser
+bindsym $mod+Shift+B exec $browser
 
 # Screen brightness controls
 bindsym XF86MonBrightnessUp exec --no-startup-id light -A 5 
@@ -109,10 +117,10 @@ mode "resize" {
 
 set $ws1 "1:base"
 set $ws2 "2:web"
-set $ws3 "3:work"
-set $ws4 "4:code"
+set $ws3 "3:org"
+set $ws4 "4:mail"
 set $ws5 "5:music"
-set $ws6 "6"
+set $ws6 "6:exmachina"
 set $ws7 "7"
 
 # Mod+<n> switches to a workspace
@@ -125,7 +133,7 @@ bindsym $mod+6 workspace $ws6
 bindsym $mod+7 workspace $ws7
 
 # Mod+n renames the workspace
-bindsym $mod+n exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+# bindsym $mod+n exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
 
 # Alt+Tab switches windows
 bindsym Mod1+Tab exec --no-startup-id rofi -show window
@@ -155,11 +163,10 @@ assign [instance="emacs-elfeed"] $ws2
 assign [instance="emacs-twitter"] $ws2
 
 # Workspace 3, work
-assign [instance="emacs-notmuch"] $ws3
 assign [instance="emacs-org"] $ws3
 
-# Workspace 4, code
-assign [instance="emacs-code"] $ws4
+# Workspace 4, mail
+assign [instance="emacs-notmuch"] $ws4
 
 # Workspace 5, virtual machines and remote desktops
 assign [class="Remmina"] $ws6
