@@ -1,0 +1,2 @@
+#!/bin/sh
+emacsclient -e "(princ org-clock-current-task #'external-debugging-output)"
