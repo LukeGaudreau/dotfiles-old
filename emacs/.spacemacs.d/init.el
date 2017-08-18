@@ -343,6 +343,10 @@ you should place your code here."
   (setq twittering-use-master-password t)
   ;; org-mode
   (require 'ox-confluence)
+  (setq org-file-apps '((auto-mode . emacs)
+                       ("\\.mm\\'" . "xdg-open %s")
+                       ("\\.x?html?\\'" . "xdg-open %s")
+                       ("\\.pdf\\'" . "xdg-open %s")))
   (setq org-startup-indented t
         org-fontify-done-headline t
         org-blank-before-new-entry nil
