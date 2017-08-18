@@ -360,103 +360,165 @@ you should place your code here."
                              (setq line-spacing 0.5)
                              ))
   ;; org capture
-  (setq org-capture-templates '(("t" "Todo" entry
-                                 (file "~/Notes/Inbox.org")
-                                 "* TODO %i%?")
-                                ))
+  (setq org-capture-templates '(("t" "Todo" entry (file "~/Notes/Inbox.org")
+                                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+                                ("r" "Respond" entry (file "~/Notes/Inbox.org")
+                                 "* NEXT Respond to %:from on%:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+                                ("c" "Conversation" entry (file "~/Notes/Inbox.org")
+                                 "* CONVERSATION with %? :Conversation:\n%U" :clock-in t :clock-resume t)
+                                )
+        )
   (setq org-refile-targets '((org-agenda-files :maxlevel . 4)))
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
+  ;; org clock
+  (setq spaceline-org-clock-p t)        ; track in modeline
+
   ;; after org
   (eval-after-load "org"
     '(progn
        (setq org-todo-keywords
              (quote ((sequence "NEXT(n)" "TODO(t)" "|" "DONE(d)")
-                     (sequence "WAITING(w@)" "IN PROGRESS(p)" "|" "CANCELED(c@)" "SOMEDAY(s@)"))))
+                     (sequence "WAITING(w@)" "IN PROGRESS(p)" "CONVERSATION(c@)""|" "CANCELED(k@)" "SOMEDAY(s@)"))))
        (setq org-use-fast-todo-selection t
              org-use-fast-tag-selection t)
        ;; Org Tags
        (setq org-tag-persistent-alist
-             '(("Project" . ?p)
-               ("Monday" . ?m)
-               ("Tuesday" . ?t)
-               ("Wednesday" . ?w)
-               ("Thursday" . ?h)
-               ("Friday" . ?f)
+             '(("Primo" . ?p)
+               ("ILLiad" . ?i)
+               ("OJS" . ?o)
+               ("EZProxy" . ?z)
+               ("Website" . ?w)
                ))
        (setq org-complete-tags-always-offer-all-agenda-tags t)
        (setq org-bullets-bullet-list '("•"))
        (setq org-agenda-block-separator 32)
-       (setq org-tags-column 0)
+       (setq org-tags-column -0)
+       (setq org-agenda-tags-column -100)
        ))
-  (add-hook 'org-agenda-mode-hook (lambda () (variable-pitch-mode t)))
+  ;; (add-hook 'org-agenda-mode-hook (lambda () (variable-pitch-mode t)))
   (eval-after-load "org-agenda"
     '(progn
+       (define-key org-agenda-mode-map (kbd "RET") 'org-agenda-goto)
+       (define-key org-agenda-mode-map (kbd "TAB") 'org-agenda-switch-to)
+       (advice-add 'org-agenda-goto :after
+                   (lambda (&rest args)
+                     (org-narrow-to-subtree)))
+
        ;; Hide categories from Agenda
        (setq org-agenda-prefix-format '((agenda . "%?-12t% s")
                                         (timeline . "  % s")
                                         (todo . "")
                                         (tags . "")
                                         (search . "")))
-       (setq org-agenda-scheduled-leaders '("" "%2d d. ago: ")
+       (setq org-agenda-scheduled-leaders '("" "")
              org-agenda-deadline-leaders '("Due:  " "Due in %3d d.: " "%2d d. Overdue: "))
        (setq org-agenda-timegrid-use-ampm t
              org-agenda-window-setup 'only-window
              org-deadline-warning-days 0)
        ;; Don't show tags used to generate the agenda. They are implicit in the view.
-       (setq org-agenda-hide-tags-regexp "Project\\|Monday\\|Tuesday\\|Wednesday\\|Thursday\\|Friday")
+       (setq org-agenda-hide-tags-regexp "Project\\|Inbox")
+       (setq org-stuck-projects '("+LEVEL=1-Inbox-Support" ("NEXT") nil nil))
        (setq org-agenda-custom-commands
              (quote (("." "Daily"
                       ((agenda "/-DONE"
                                ((org-agenda-overriding-header "Daily Agenda")
                                 (org-agenda-entry-types '(:timestamp :deadline :scheduled))
+                                (org-agenda-skip-deadline-if-done t)
+                                (org-agenda-skip-scheduled-if-done t)
                                 (org-agenda-span 1)
                                 ))
-                       ;; Show tasks tagged with the currently displayed day of the week
-                       (tags (concat(format-time-string "%A" (org-get-cursor-date)) "/!")
-                             ((org-agenda-overriding-header "Todo")
+                       (tags "Inbox/-DONE"
+                             ((org-agenda-overriding-header "Inbox")
                               (org-agenda-ignore-scheduled t)
                               (org-agenda-tags-todo-honor-ignore-options t)
                               (org-agenda-todo-ignore-deadlines t)
                               (org-agenda-todo-ignore-scheduled t)
                               (org-tags-match-list-sublevels nil)
                               ))
-                       )))))))
+                       (todo "NEXT"
+                             ((org-agenda-overriding-header "Next Actions")
+                              (org-agenda-ignore-scheduled t)
+                              (org-agenda-ignore-deadlines nil)
+                              (org-agenda-todo-ignore-deadlines nil)
+                              (org-agenda-todo-ignore-scheduled t)
+                              (org-agenda-tags-todo-honor-ignore-options t)
+                              ))
+                       (todo "WAITING"
+                             ((org-agenda-overriding-header "Waiting")))
+                       (stuck ""
+                              ((org-agenda-overriding-header "Stuck Projects")))
+                       ))
+                     ("P" tags "Project")
+                     ))))))
   ;; Do not write anything past this comment. This is where Emacs will
   ;; auto-generate custom variable definitions.
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(ansi-color-names-vector
-     ["#d2ceda" "#f2241f" "#67b11d" "#b1951d" "#3a81c3" "#a31db1" "#21b8c7" "#655370"])
-   '(beacon-color "#F8BBD0")
-   '(evil-emacs-state-cursor (quote ("#D50000" hbar)) t)
-   '(evil-insert-state-cursor (quote ("#D50000" bar)) t)
-   '(evil-normal-state-cursor (quote ("#F57F17" box)) t)
-   '(evil-visual-state-cursor (quote ("#66BB6A" box)) t)
-   '(evil-want-Y-yank-to-eol nil)
-   '(highlight-indent-guides-auto-enabled nil)
-   '(highlight-symbol-colors
-     (quote
-      ("#F57F17" "#66BB6A" "#0097A7" "#42A5F5" "#7E57C2" "#D84315")))
-   '(highlight-symbol-foreground-color "#546E7A")
-   '(highlight-tail-colors (quote (("#F8BBD0" . 0) ("#FAFAFA" . 100))))
-   '(notmuch-hello-sections
-     (quote
-      (notmuch-hello-insert-search notmuch-hello-insert-saved-searches notmuch-hello-insert-recent-searches notmuch-hello-insert-alltags notmuch-hello-insert-footer)))
-   '(org-agenda-files (quote ("~/Notes/Support.org" "~/Notes/Projects.org")))
-   '(package-selected-packages
-     (quote
-      (twittering-mode web-beautify livid-mode skewer-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data slime-company common-lisp-snippets writeroom-mode mu4e-maildirs-extension mu4e-alert material-theme notmuch-theme notmuch halcyon-light-theme slime spotify color-theme-sanityinc-tomorrow apropospriate-theme zerodark-theme all-the-icons memoize font-lock+ php-extras phpunit phpcbf php-auto-yasnippets drupal-mode php-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht xterm-color unfill smeargle shell-pop orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help elfeed-web simple-httpd elfeed-org elfeed-goodies ace-jump-mode noflet elfeed diff-hl company-statistics company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy)))
-   '(pos-tip-background-color "#ffffff")
-   '(pos-tip-foreground-color "#78909C")
-   '(send-mail-function (quote sendmail-send-it))
-   '(tabbar-background-color "#ffffff")))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#d2ceda" "#f2241f" "#67b11d" "#b1951d" "#3a81c3" "#a31db1" "#21b8c7" "#655370"])
+ '(beacon-color "#F8BBD0")
+ '(evil-emacs-state-cursor (quote ("#D50000" hbar)) t)
+ '(evil-insert-state-cursor (quote ("#D50000" bar)) t)
+ '(evil-normal-state-cursor (quote ("#F57F17" box)) t)
+ '(evil-visual-state-cursor (quote ("#66BB6A" box)) t)
+ '(evil-want-Y-yank-to-eol nil)
+ '(fci-rule-color "#5B6268" t)
+ '(highlight-indent-guides-auto-enabled nil)
+ '(highlight-symbol-colors
+   (quote
+    ("#F57F17" "#66BB6A" "#0097A7" "#42A5F5" "#7E57C2" "#D84315")))
+ '(highlight-symbol-foreground-color "#546E7A")
+ '(highlight-tail-colors (quote (("#F8BBD0" . 0) ("#FAFAFA" . 100))))
+ '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
+ '(notmuch-hello-sections
+   (quote
+    (notmuch-hello-insert-search notmuch-hello-insert-saved-searches notmuch-hello-insert-recent-searches notmuch-hello-insert-alltags notmuch-hello-insert-footer)))
+ '(org-agenda-files
+   (quote
+    ("~/Notes/Inbox.org" "~/Notes/Support.org" "~/Notes/Projects.org")))
+ '(org-ellipsis "  ")
+ '(org-fontify-done-headline t)
+ '(org-fontify-quote-and-verse-blocks t)
+ '(org-fontify-whole-heading-line t)
+ '(package-selected-packages
+   (quote
+    (gulp-task-runner yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode intero hy-mode hlint-refactor hindent haskell-snippets frames-only-mode flycheck-haskell cython-mode company-ghci company-ghc ghc haskell-mode company-cabal company-anaconda cmm-mode anaconda-mode pythonic doom-themes twittering-mode web-beautify livid-mode skewer-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data slime-company common-lisp-snippets writeroom-mode mu4e-maildirs-extension mu4e-alert material-theme notmuch-theme notmuch halcyon-light-theme slime spotify color-theme-sanityinc-tomorrow apropospriate-theme zerodark-theme all-the-icons memoize font-lock+ php-extras phpunit phpcbf php-auto-yasnippets drupal-mode php-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht xterm-color unfill smeargle shell-pop orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help elfeed-web simple-httpd elfeed-org elfeed-goodies ace-jump-mode noflet elfeed diff-hl company-statistics company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+ '(pos-tip-background-color "#ffffff")
+ '(pos-tip-foreground-color "#78909C")
+ '(send-mail-function (quote sendmail-send-it))
+ '(tabbar-background-color "#ffffff")
+ '(vc-annotate-background "#1B2229")
+ '(vc-annotate-color-map
+   (list
+    (cons 20 "#98be65")
+    (cons 40 "#b4be6c")
+    (cons 60 "#d0be73")
+    (cons 80 "#ECBE7B")
+    (cons 100 "#e6ab6a")
+    (cons 120 "#e09859")
+    (cons 140 "#da8548")
+    (cons 160 "#d38079")
+    (cons 180 "#cc7cab")
+    (cons 200 "#c678dd")
+    (cons 220 "#d974b7")
+    (cons 240 "#ec7091")
+    (cons 260 "#ff6c6b")
+    (cons 280 "#cf6162")
+    (cons 300 "#9f585a")
+    (cons 320 "#6f4e52")
+    (cons 340 "#5B6268")
+    (cons 360 "#5B6268")))
+ '(vc-annotate-very-old-color nil))
+  
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(org-ellipsis ((t nil))))
