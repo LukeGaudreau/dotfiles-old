@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Status script for dwm
+# colours: 01:normal 02:white 03:red 04:green 05:yellow 06:blue
+# 07:cyan 08:magenta 09:grey
+
+# Copyright (c) 2013-2017 Jason W Ryan
+# The MIT License (MIT) http://opensource.org/licenses/MIT
+
+vol(){
+    vol="$(pamixer --get-volume)"
+    mute="$(pamixer --get-mute)"
+    if $mute; then
+        printf "%b" "\x03 --\x01"
+    else
+        printf "%b" "\x06 $vol\x01"
+    fi
+}
+bat(){
+    onl="$(</sys/class/power_supply/ADP1/online)"
+    charge="$(</sys/class/power_supply/BAT0/capacity)"
+    if [[ $onl -eq 0 && $charge -ge 15 ]]; then
+        printf "%b" "\x04 $charge%\x01"
+    elif [[ $onl -eq 0 && $charge -le 14 ]]; then
+        printf "%b" "\x03 $charge%\x01"
+    else
+        printf "%b" "\x04 $charge%\x01"
+    fi
+}
+
+dte(){
+    dte="$(date "+%l:%M %p")"
+    printf "%b" "\x02$dte\x01"
+}
+
+# Pipe to status bar
+xsetroot -name "$(vol)$(bat)$(dte)                    "
