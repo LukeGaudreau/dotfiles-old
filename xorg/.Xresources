@@ -1,0 +1,81 @@
+!! cursor
+Xcursor.theme: Adwaita
+
+!! font settings
+Xft.dpi: 192
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+
+!! xterm
+XTerm*termName: xterm-256color
+XTerm*faceName: Iosevka
+XTerm*faceSize: 10
+XTerm*renderFont: true
+XTerm.vt100.metaSendsEscape: true
+XTerm.vt100.savelines: 4096
+XTerm.vt100.visualBell: false
+XTerm*vt100.Translations: #override \
+                 Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
+                 Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)
+
+
+!! Halcyon
+! XTerm.vt100.foreground: #303030
+! XTerm.vt100.background: #FFFFFF
+! !black
+! *color0:#303030
+! !*color0:#242424
+! *color8:#4B5050
+! !red
+! *color1:#E47272
+! *color9:#FE7F7F
+! !green
+! *color2:#5CB899
+! *color10:#66CCAA
+! !yellow
+! *color3:#E3D071
+! *color11:#FFEA80
+! !blue
+! *color4:#73ACE5
+! *color12:#80BFFF
+! !magenta
+! *color5:#6666CC
+! *color13:#8080FF
+! !cyan
+! *color6:#4B9696
+! *color14:#5CB8B8
+! !white
+! *color7:#E3E3E3
+! *color15:#FFFFFF
+
+!! Zerodark
+XTerm.vt100.foreground: #abb2bf
+XTerm.vt100.background: #282c34
+!black
+*color0:#282c34
+*color8:#687080
+!red
+*color1:#744A5B
+*color9:#FF6C6B
+!green
+*color2:#98BE65
+*color10:#9EAC8C
+!yellow
+*color3:#DA8548
+*color11:#DDBD78
+!blue
+*color4:#1F5582
+*color12:#61AFEF
+!magenta
+*color5:#64446D
+*color13:#C678DD
+!cyan
+*color6:#4B9696
+*color14:#5CB8B8
+!white
+*color7:#CCD4E3
+*color15:#ABB2BF

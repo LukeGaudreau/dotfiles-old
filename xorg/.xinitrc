@@ -34,4 +34,7 @@ setxkbmap -option compose:ralt,ctrl:nocaps,terminate:ctrl_alt_bksp
 #compton &
 #dunst &
 nextcloud &
-exec i3
+#exec bspwm
+#exec i3
+# exec xmonad
+exec dwm-start
