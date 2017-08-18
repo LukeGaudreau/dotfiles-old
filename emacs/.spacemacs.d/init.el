@@ -49,7 +49,6 @@ values."
      git
      github
      markdown
-     ;; (mu4e :variables mu4e-account-alist t)
      notmuch
      org
      (shell :variables
